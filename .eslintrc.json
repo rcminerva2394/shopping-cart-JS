@@ -11,6 +11,7 @@
   },
   "rules": {
     "linebreak-style": 0,
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "no-console": "off"
   }
 }
