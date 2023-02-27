@@ -1,6 +1,84 @@
+const CHAIRS = [
+  {
+    name: 'Donovan Gold',
+    id: 'ch1',
+    description:
+      'Bar stool back gold leaf and white vinyl cushion bar stool/ height: 95 cm,width 23cm',
+    img: '/imgs/donovan-gold.png',
+    price: 199,
+    height: '95 cm',
+    width: '23 cm',
+    color: 'gold',
+    material: 'vinyl',
+  },
+  {
+    name: 'Nahema',
+    id: 'ch2',
+    description:
+      'Bar stool with backrest dark blue metal/height: 110 cm, width: 53cm',
+    img: '/imgs/nahema.png',
+    price: 289,
+    height: '110 cm',
+    width: '53 cm',
+    color: 'dark blue',
+    material: 'metal',
+    discount: 0.3,
+  },
+  {
+    name: 'Heritage Velvet Chair',
+    id: 'ch3',
+    description:
+      'Cafe chair with backrest blue almaz wood/height: 115 cm, width: 85cm',
+    img: '/imgs/heritage-velvet.png',
+    price: 489,
+    height: '115 cm',
+    width: '85 cm',
+    color: 'blue almaz',
+    material: 'wood',
+  },
+  {
+    name: 'Court Catania Chair',
+    id: 'ch4',
+    description:
+      'Cafe chair with backrest, blue velvet metal/height: 82 cm,width: 75cm',
+    img: '/imgs/court-catania.png',
+    price: 269,
+    height: '82 cm',
+    width: '75 cm',
+    color: 'blue velvet',
+    material: 'metal',
+  },
+  {
+    name: 'Camille Chair',
+    id: 'ch5',
+    description:
+      'Cafe chair with backrest golden olive metal/height: 101 cm,width: 53cm',
+    img: '/imgs/camille.png',
+    price: 339,
+    height: '101 cm',
+    width: '53 cm',
+    color: 'golden olive',
+    material: 'metal',
+  },
+  {
+    name: 'Bethany',
+    id: 'ch6',
+    description:
+      'Bar stool with backrest dark brown wood /height: 110 cm, width: 53cm',
+    img: '/imgs/bethany.png',
+    price: 169,
+    height: '110 cm',
+    width: '53 cm',
+    color: 'dark brown',
+    material: 'wood',
+    discount: 0.45,
+  },
+];
+
 class Product {
-  constructor(name, description, quantity, price) {
+  constructor(name, id, description, quantity, price) {
     this.name = name;
+    this.id = id;
     this.description = description;
     this.quantity = Math.max(quantity, 0);
     this.price = Math.max(price, 0);
@@ -22,6 +100,7 @@ class Product {
 class Furniture extends Product {
   constructor(
     name,
+    id,
     description,
     quantity,
     price,
@@ -30,7 +109,7 @@ class Furniture extends Product {
     color,
     material
   ) {
-    super(name, description, quantity, price);
+    super(name, id, description, quantity, price);
     this.height = height;
     this.width = width;
     this.color = color;
@@ -41,6 +120,7 @@ class Furniture extends Product {
 class DiscountedItem extends Furniture {
   constructor(
     name,
+    id,
     description,
     quantity,
     price,
@@ -50,7 +130,17 @@ class DiscountedItem extends Furniture {
     material,
     discount
   ) {
-    super(name, description, quantity, price, height, width, color, material);
+    super(
+      name,
+      id,
+      description,
+      quantity,
+      price,
+      height,
+      width,
+      color,
+      material
+    );
     this.discount = discount;
   }
 
@@ -59,6 +149,43 @@ class DiscountedItem extends Furniture {
     this.price -= this.price * this.discount;
   }
 }
+
+class Catalogue {
+  constructor() {
+    this.chairs = [];
+  }
+
+  addChair(chair) {
+    this.chairs.push(chair);
+  }
+}
+
+const chairCatalogue = new Catalogue();
+
+CHAIRS.forEach((chair) => {
+  let newChair;
+  const args = [
+    chair.name,
+    chair.id,
+    chair.description,
+    1,
+    chair.price,
+    chair.height,
+    chair.width,
+    chair.color,
+    chair.material,
+  ];
+
+  if (chair?.discount === undefined) {
+    newChair = new Furniture(...args);
+  } else {
+    newChair = new DiscountedItem(...args, chair.discount);
+  }
+
+  chairCatalogue.addChair(newChair);
+});
+
+console.log(chairCatalogue);
 
 class ShoppingCart {
   constructor() {
@@ -86,9 +213,42 @@ class ShoppingCart {
       0
     );
   }
+
+  getTotalNumberOfItems() {
+    return this.items.reduce((total, currQuan) => total + currQuan.quantity, 0);
+  }
 }
 
-const items = document.querySelectorAll('.item-description-container');
+const cart = new ShoppingCart();
+const totalItemsEl = document.querySelector('.total-cart-items');
+
+// To listen to every click of the add item button
+const btns = document.querySelectorAll('.btn.item__btn');
+btns.forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    const { id } = e.target;
+    const foundItem = cart.items.find((item) => item.id === id);
+    if (foundItem) {
+      foundItem.increaseQuantity();
+    } else {
+      const chosenChair = chairCatalogue.chairs.find(
+        (chair) => chair.id === id
+      );
+      cart.addItem(chosenChair);
+      console.log(chosenChair);
+    }
+    // To display how many items added in the shopping bag
+    const totalItems = cart.getTotalNumberOfItems();
+    if (totalItems >= 1) {
+      totalItemsEl.innerText = totalItems;
+      totalItemsEl.classList.remove('hidden');
+    } else {
+      totalItemsEl.classList.add('hidden');
+    }
+  });
+});
+
+/* const items = document.querySelectorAll('.item-description-container'); */
 
 /*
 const itemName = document.querySelector('.item-name');
@@ -99,9 +259,8 @@ const itemHeight = document.querySelector('.item-height');
 const itemWidth = document.querySelector('.item-width');
 const itemPrice = document.querySelector('.item-price'); */
 
-const cart = new ShoppingCart();
-
 /** Applying event delegation again */
+/*
 items.forEach((item) => {
   item.addEventListener('click', (e) => {
     let chair;
@@ -155,7 +314,7 @@ items.forEach((item) => {
         ).toString()
       );
 
-      console.log(typeof discount, discount.length);
+      console.log(typeof discount);
       if (Number.isNaN(discount)) {
         chair = new Furniture(
           itemName,
@@ -190,5 +349,11 @@ items.forEach((item) => {
     console.log(typeof itemHeight, itemHeight);
     console.log(typeof itemWidth, itemWidth);
     console.log(typeof itemPrice, itemPrice);
+    console.log(chair);
+    cart.addItem(chair);
+    console.log(cart.getItems());
+    console.log(cart.items);
   });
 });
+
+*/

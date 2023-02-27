@@ -23,6 +23,7 @@
       <h1>Discover</h1>
       <button class="btn btn__cart">
         <i class="fas fa-shopping-bag"></i>
+        <p class="total-cart-items hidden"></p>
       </button>
     </header>
     <main>
@@ -38,7 +39,7 @@
             <img src="/imgs/donovan-gold.png" alt="Donovan Gold Chair" />
           </div>
           <div class="item-description-container">
-            <button class="btn item__btn">+</button>
+            <button class="btn item__btn" id="ch1">+</button>
             <div class="item-caption">
               <p class="item-name">Donovan Gold</p>
               <div class="description-price-container">
@@ -54,14 +55,13 @@
           </div>
         </div>
 
-        <!---->
         <div class="item">
           <span class="item-discount">30% off</span>
           <div class="item__img">
             <img src="/imgs/nahema.png" alt="Nahema Chair" />
           </div>
           <div class="item-description-container">
-            <button class="btn item__btn">+</button>
+            <button class="btn item__btn" id="ch2">+</button>
             <div class="item-caption">
               <p class="item-name">Nahema</p>
               <div class="description-price-container">
@@ -79,13 +79,12 @@
           </div>
         </div>
 
-        <!---->
         <div class="item">
           <div class="item__img">
             <img src="/imgs/heritage-velvet.png" alt="Heritage Velvet Chair" />
           </div>
           <div class="item-description-container">
-            <button class="btn item__btn">+</button>
+            <button class="btn item__btn" id="ch3">+</button>
             <div class="item-caption">
               <p class="item-name">Heritage Velvet</p>
               <div class="description-price-container">
@@ -102,13 +101,12 @@
           </div>
         </div>
 
-        <!---->
         <div class="item">
           <div class="item__img">
             <img src="/imgs/court-catania.png" alt="Court Catania Chair" />
           </div>
           <div class="item-description-container">
-            <button class="btn item__btn">+</button>
+            <button class="btn item__btn" id="ch4">+</button>
             <div class="item-caption">
               <p class="item-name">Court Catania</p>
               <div class="description-price-container">
@@ -126,13 +124,12 @@
           </div>
         </div>
 
-        <!---->
         <div class="item">
           <div class="item__img">
             <img src="/imgs/camille.png" alt="Camille Chair" />
           </div>
           <div class="item-description-container">
-            <button class="btn item__btn">+</button>
+            <button class="btn item__btn" id="ch5">+</button>
             <div class="item-caption">
               <p class="item-name">Camille</p>
               <div class="description-price-container">
@@ -149,14 +146,13 @@
           </div>
         </div>
 
-        <!---->
         <div class="item">
           <span class="item-discount">45% off</span>
           <div class="item__img">
             <img src="/imgs/bethany.png" alt="Bethany" />
           </div>
           <div class="item-description-container">
-            <button class="btn item__btn">+</button>
+            <button class="btn item__btn" id="ch6">+</button>
             <div class="item-caption">
               <p class="item-name">Bethany</p>
               <div class="description-price-container">
@@ -174,7 +170,95 @@
           </div>
         </div>
       </section>
-      <section class="shopping-cart-modal"></section>
     </main>
+
+    <!---MODAL CART-->
+    <div class="shopping-cart-modal">
+      <div class="modal-backdrop"></div>
+      <div class="shopping-cart-content">
+        <div class="your-cart-container">
+          <p class="your-cart">Your Cart</p>
+          <button class="btn close-modal-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!--SAMPLE CART ITEMS-->
+        <div class="cart-items">
+          <div class="cart-item">
+            <img src="/imgs/bethany.png" alt="Bethany" />
+            <div class="cart-item-description">
+              <p class="cart-item-name">Bethany</p>
+              <span>
+                Bar stool with backrest dark brown wood /height: 110 cm, width:
+                53cm
+              </span>
+              <p class="cart-item-price">$92.95</p>
+              <div class="btns">
+                <button class="btn minus">-</button>
+                <span class="quantity">1</span>
+                <button class="btn plus">+</button>
+              </div>
+            </div>
+
+            <button class="btn remove-item">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="cart-item">
+            <img src="/imgs/camille.png" alt="Camille Chair" />
+            <div class="cart-item-description">
+              <p class="cart-item-name">Camille</p>
+              <span>
+                Cafe chair with backrest golden olive metal/height: 101 cm,
+                width: 53cm
+              </span>
+              <p class="cart-item-price">$339</p>
+              <div class="btns">
+                <button class="btn minus">-</button>
+                <span class="quantity">1</span>
+                <button class="btn plus">+</button>
+              </div>
+            </div>
+
+            <button class="btn remove-item">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="cart-item">
+          <img src="/imgs/bethany.png" alt="Bethany" />
+          <div class="cart-item-description">
+            <p class="cart-item-name">Bethany</p>
+            <span>
+              Bar stool with backrest dark brown wood /height: 110 cm, width:
+              53cm
+            </span>
+            <p class="cart-item-price">$92.95</p>
+            <div class="btns">
+              <button class="btn minus">-</button>
+              <span class="quantity">1</span>
+              <button class="btn plus">+</button>
+            </div>
+          </div>
+
+          <button class="btn remove-item">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- TOTAL -->
+        <div class="total">
+          <p class="total-text">Total:</p>
+          <p class="total-amount">$1500</p>
+        </div>
+        <!--CONFIRM OR DELETE-->
+
+        <button class="btn confirm">Confirm</button>
+        <button class="btn delete-all">Delete All</button>
+      </div>
+    </div>
   </body>
 </html>
