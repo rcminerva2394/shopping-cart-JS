@@ -76,20 +76,25 @@ const CHAIRS = [
 ];
 
 class Product {
-  constructor(name, id, description, quantity, price) {
+  constructor(name, id, description, quantity, price, img) {
     this.name = name;
     this.id = id;
     this.description = description;
     this.quantity = Math.max(quantity, 0);
     this.price = Math.max(price, 0);
+    this.img = img;
   }
 
   increaseQuantity() {
-    this.quantity += this.quantity;
+    if (this.quantity >= 1) {
+      this.quantity += 1;
+    }
   }
 
   decreaseQuantity() {
-    this.quantity -= this.quantity;
+    if (this.quantity > 1) {
+      this.quantity -= 1;
+    }
   }
 
   getTotalPrice() {
@@ -104,12 +109,13 @@ class Furniture extends Product {
     description,
     quantity,
     price,
+    img,
     height,
     width,
     color,
     material
   ) {
-    super(name, id, description, quantity, price);
+    super(name, id, description, quantity, price, img);
     this.height = height;
     this.width = width;
     this.color = color;
@@ -124,6 +130,7 @@ class DiscountedItem extends Furniture {
     description,
     quantity,
     price,
+    img,
     height,
     width,
     color,
@@ -136,6 +143,7 @@ class DiscountedItem extends Furniture {
       description,
       quantity,
       price,
+      img,
       height,
       width,
       color,
@@ -144,9 +152,10 @@ class DiscountedItem extends Furniture {
     this.discount = discount;
   }
 
-  applyDiscount() {
-    this.undiscountedPrice = this.price;
-    this.price -= this.price * this.discount;
+  getTotalDiscountPrice() {
+    return (
+      this.quantity * this.price - this.discount * this.price * this.quantity
+    );
   }
 }
 
@@ -170,6 +179,7 @@ CHAIRS.forEach((chair) => {
     chair.description,
     1,
     chair.price,
+    chair.img,
     chair.height,
     chair.width,
     chair.color,
@@ -185,8 +195,6 @@ CHAIRS.forEach((chair) => {
   chairCatalogue.addChair(newChair);
 });
 
-console.log(chairCatalogue);
-
 class ShoppingCart {
   constructor() {
     this.items = [];
@@ -196,11 +204,15 @@ class ShoppingCart {
     this.items.push(item);
   }
 
-  removeItem(item) {
-    const index = this.items.indexOf(item);
+  removeItem(id) {
+    const index = this.items.findIndex((item) => item.id === id);
     if (index !== -1) {
       this.items.splice(index, 1);
     }
+  }
+
+  removeAll() {
+    this.items = [];
   }
 
   getItems() {
@@ -208,10 +220,16 @@ class ShoppingCart {
   }
 
   getTotalPrice() {
-    return this.items.reduce(
-      (total, currItem) => total + currItem.price * currItem.quantity,
-      0
-    );
+    return this.items
+      .reduce(
+        (total, currItem) =>
+          total +
+          (currItem?.discount
+            ? currItem.getTotalDiscountPrice()
+            : currItem.getTotalPrice()),
+        0
+      )
+      .toFixed(2);
   }
 
   getTotalNumberOfItems() {
@@ -222,7 +240,18 @@ class ShoppingCart {
 const cart = new ShoppingCart();
 const totalItemsEl = document.querySelector('.total-cart-items');
 
-// To listen to every click of the add item button
+// To display how many items are there in the shopping bag
+const updateCartCounter = () => {
+  const totalItems = cart.getTotalNumberOfItems();
+  if (totalItems >= 1) {
+    totalItemsEl.innerText = totalItems;
+    totalItemsEl.classList.remove('hidden');
+  } else {
+    totalItemsEl.classList.add('hidden');
+  }
+};
+
+// To listen to every click of the add to cart button
 const btns = document.querySelectorAll('.btn.item__btn');
 btns.forEach((btn) => {
   btn.addEventListener('click', (e) => {
@@ -237,123 +266,158 @@ btns.forEach((btn) => {
       cart.addItem(chosenChair);
       console.log(chosenChair);
     }
-    // To display how many items added in the shopping bag
-    const totalItems = cart.getTotalNumberOfItems();
-    if (totalItems >= 1) {
-      totalItemsEl.innerText = totalItems;
-      totalItemsEl.classList.remove('hidden');
-    } else {
-      totalItemsEl.classList.add('hidden');
-    }
+    updateCartCounter();
   });
 });
 
-/* const items = document.querySelectorAll('.item-description-container'); */
+/** **** YOUR CART MODAL **** */
+const shoppingCartModalEl = document.querySelector('.shopping-cart-modal');
+const closeCart = () => {
+  shoppingCartModalEl.classList.remove('show');
+};
 
-/*
-const itemName = document.querySelector('.item-name');
-const itemDescription = document.querySelector('.item-description');
-const itemColor = document.querySelector('.item-color');
-const itemMaterial = document.querySelector('.item-material');
-const itemHeight = document.querySelector('.item-height');
-const itemWidth = document.querySelector('.item-width');
-const itemPrice = document.querySelector('.item-price'); */
-
-/** Applying event delegation again */
-/*
-items.forEach((item) => {
-  item.addEventListener('click', (e) => {
-    let chair;
-    let itemName;
-    let itemDescription;
-    let itemColor;
-    let itemHeight;
-    let itemWidth;
-    let itemPrice;
-    let itemMaterial;
-
-    if (e.target.classList.contains('item__btn')) {
-      itemName = e.target.nextElementSibling.children[0].innerHTML;
-      const descriptionContainerChildren =
-        e.target.nextElementSibling.children[1];
-      const itemDescriptionArr =
-        descriptionContainerChildren.children[0].children;
-      itemDescription = descriptionContainerChildren.children[0].innerText;
-      console.log(itemName, descriptionContainerChildren);
-      for (let i = 0; i < itemDescriptionArr.length; i += 1) {
-        if (itemDescriptionArr[i].className === 'item-color') {
-          itemColor = itemDescriptionArr[i].innerText;
-        } else if (itemDescriptionArr[i].className === 'item-height') {
-          itemHeight = parseInt(itemDescriptionArr[i].innerText, 10);
-        } else if (itemDescriptionArr[i].className === 'item-width') {
-          itemWidth = parseInt(itemDescriptionArr[i].innerText, 10);
-        } else if (itemDescriptionArr[i].className === 'item-material') {
-          itemMaterial = itemDescriptionArr[i].innerText;
-        }
-      }
-      itemPrice = parseInt(
-        descriptionContainerChildren.children[1].innerText.substring(1),
-        10
-      );
-
-      // Create a function that will get the decimal of the percentage discount
-      const getDecimal = (percent) => {
-        let finalDecimal;
-        if (percent.length === 1) {
-          finalDecimal = parseFloat(`0.0${percent}`);
-        } else if (percent.length === 2) {
-          finalDecimal = parseFloat(`0.${percent}`);
-        }
-        return finalDecimal;
-      };
-
-      const discount = getDecimal(
-        parseInt(
-          e.target.parentElement.parentElement.firstElementChild.innerText,
-          10
-        ).toString()
-      );
-
-      console.log(typeof discount);
-      if (Number.isNaN(discount)) {
-        chair = new Furniture(
-          itemName,
-          itemDescription,
-          1,
-          itemPrice,
-          itemHeight,
-          itemWidth,
-          itemColor,
-          itemMaterial
-        );
-      } else {
-        chair = new DiscountedItem(
-          itemName,
-          itemDescription,
-          1,
-          itemPrice,
-          itemHeight,
-          itemWidth,
-          itemColor,
-          itemMaterial,
-          discount
-        );
-      }
-
-      // cart.addItem(chair);
-    }
-    console.log(e.target.nextElementSibling.children);
-    console.log(itemName);
-    console.log(itemDescription);
-    console.log(itemColor);
-    console.log(typeof itemHeight, itemHeight);
-    console.log(typeof itemWidth, itemWidth);
-    console.log(typeof itemPrice, itemPrice);
-    console.log(chair);
-    cart.addItem(chair);
-    console.log(cart.getItems());
-    console.log(cart.items);
-  });
+// Closing the cart if either backdrop or close button of the modal is clicked
+const modalBackdropEl = document.querySelector('.modal-backdrop');
+modalBackdropEl.addEventListener('click', () => {
+  closeCart();
 });
 
-*/
+const closeBtnModalCartEl = document.querySelector('.btn.close-modal-btn');
+closeBtnModalCartEl.addEventListener('click', () => {
+  closeCart();
+});
+
+/* DOM Elements related to the shopping bag or cart */
+const cartMainContentEl = document.querySelector('.cart-main-content');
+// Usually it starts with an empty cart
+const initialCart = () => {
+  const emptyCart = document.createElement('p');
+  emptyCart.innerText = 'Your shopping bag is empty';
+  emptyCart.style.textAlign = 'center';
+  emptyCart.style.marginTop = '5rem';
+  cartMainContentEl.append(emptyCart);
+};
+
+const displayCartItems = () => {
+  updateCartCounter();
+  cartMainContentEl.innerHTML = '';
+
+  if (cart.getTotalNumberOfItems() === 0) {
+    cartMainContentEl.innerHTML = '';
+    initialCart();
+    return;
+  }
+
+  // Create the DOM elements to display the items and its button
+  const cartItems = document.createElement('div');
+  cartItems.classList.add('cart-items');
+  cartMainContentEl.append(cartItems);
+
+  // Loop through the cart class and add the item into the DOM
+  cart.items.forEach((item) => {
+    // The cart item
+    const cartItem = document.createElement('div');
+    cartItem.classList.add('cart-item');
+    const cartItemImg = document.createElement('img');
+    const cartItemDescription = document.createElement('div');
+    cartItemDescription.classList.add('cart-item-description');
+    const btnRemoveItem = document.createElement('button');
+    btnRemoveItem.classList.add('btn', 'remove-item');
+    btnRemoveItem.innerHTML = "<i class='fa-solid fa-xmark'></i>";
+    btnRemoveItem.addEventListener('click', () => {
+      cart.removeItem(item.id);
+      displayCartItems(); // Calling itself to show on DOM that the item is removed
+    });
+
+    // Image of the item
+    cartItemImg.src = item.img;
+    cartItem.setAttribute('alt', `${item.name} Chair`);
+    cartItem.append(cartItemImg);
+    // Name of the item
+    const itemName = document.createElement('p');
+    itemName.classList.add('cart-item-name');
+    itemName.innerText = item.name;
+    // Description of the item
+    cartItemDescription.append(itemName);
+    const itemDescription = document.createElement('span');
+    itemDescription.innerText = item.description;
+    cartItemDescription.append(itemDescription);
+    // Final price of the item
+    const itemFinalPrice = document.createElement('p');
+    itemFinalPrice.classList.add('cart-item-price');
+    itemFinalPrice.innerHTML = `${
+      item?.discount
+        ? `<span> $${item.getTotalDiscountPrice()}<del>$${item.getTotalPrice()}</del></span>`
+        : `$${item.getTotalPrice()}`
+    }`;
+    cartItemDescription.append(itemFinalPrice);
+    // Add Minus Buttons
+    const btnsContainer = document.createElement('div');
+    btnsContainer.classList.add('btns');
+    const btnMinus = document.createElement('button');
+    btnMinus.classList.add('btn', 'minus');
+    btnMinus.innerText = '-';
+    btnMinus.addEventListener('click', () => {
+      item.decreaseQuantity();
+      displayCartItems();
+    });
+    btnsContainer.append(btnMinus);
+    const quantity = document.createElement('span');
+    quantity.classList.add('quantity');
+    quantity.innerText = item.quantity;
+    btnsContainer.append(quantity);
+    const btnPlus = document.createElement('button');
+    btnPlus.classList.add('btn', 'plus');
+    btnPlus.innerText = '+';
+    btnPlus.addEventListener('click', () => {
+      item.increaseQuantity();
+      displayCartItems();
+    });
+    btnsContainer.append(btnPlus);
+    cartItemDescription.append(btnsContainer);
+
+    cartItem.append(cartItemDescription);
+    cartItem.append(btnRemoveItem);
+    cartItems.append(cartItem);
+  });
+
+  const totalContainer = document.createElement('div');
+  totalContainer.classList.add('total');
+  const totalText = document.createElement('p');
+  totalText.classList.add('total-text');
+  totalText.innerText = 'Total:';
+  totalContainer.append(totalText);
+  const totalAmount = document.createElement('p');
+  totalAmount.classList.add('total-amount');
+  totalAmount.innerText = `$${cart.getTotalPrice()}`;
+  totalContainer.append(totalAmount);
+
+  cartMainContentEl.append(totalContainer);
+  const btnConfirm = document.createElement('button');
+  btnConfirm.classList.add('btn', 'confirm');
+  btnConfirm.innerText = 'Confirm';
+  btnConfirm.addEventListener('click', () => {
+    closeCart();
+  });
+  const btnDelAll = document.createElement('button');
+  btnDelAll.classList.add('btn', 'delete-all');
+  btnDelAll.innerText = 'Delete All';
+  btnDelAll.addEventListener('click', () => {
+    cart.removeAll();
+    cartMainContentEl.innerHTML = '';
+    totalItemsEl.classList.add('hidden');
+    initialCart();
+  });
+
+  cartMainContentEl.append(btnConfirm);
+  cartMainContentEl.append(btnDelAll);
+};
+
+// To display the items in the cart when shopping icon is clicked
+const btnCartEl = document.querySelector('.btn__cart');
+btnCartEl.addEventListener('click', () => {
+  cartMainContentEl.innerHTML = '';
+  // 1st. Add show class to display the your cart modal
+  shoppingCartModalEl.classList.add('show');
+  displayCartItems();
+});

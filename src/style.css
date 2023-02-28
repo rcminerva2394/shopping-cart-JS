@@ -21,6 +21,7 @@ html {
   outline: none;
   background: none;
   color: #fba250;
+  cursor: pointer;
 }
 
 .btn__cart {
@@ -199,12 +200,18 @@ header {
   font-weight: 600;
   text-decoration: underline;
 }
+
 .shopping-cart-modal {
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: 100%;
+  display: none;
+}
+
+/* To display and centering it*/
+.show {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -231,7 +238,6 @@ header {
   overflow: auto;
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
-  height: 65rem;
   max-height: 100%;
 }
 
@@ -251,6 +257,7 @@ header {
 .cart-items {
   display: flex;
   flex-direction: column;
+
   margin-top: 5rem;
 }
 
@@ -289,6 +296,7 @@ header {
   gap: 1.5rem;
   margin-top: 1rem;
 }
+
 .btns button {
   font-size: 2rem;
   color: #ee943f;
@@ -300,6 +308,12 @@ header {
 
 .cart-item-price {
   font-weight: 600;
+}
+
+del {
+  color: #848484;
+  font-weight: 400;
+  margin-left: 1rem;
 }
 
 .remove-item {
