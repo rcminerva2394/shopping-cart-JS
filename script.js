@@ -4,7 +4,7 @@ const CHAIRS = [
     id: 'ch1',
     description:
       'Bar stool back gold leaf and white vinyl cushion bar stool/ height: 95 cm,width 23cm',
-    img: '/imgs/donovan-gold.png',
+    img: 'imgs/donovan-gold.png',
     price: 199,
     height: '95 cm',
     width: '23 cm',
@@ -16,7 +16,7 @@ const CHAIRS = [
     id: 'ch2',
     description:
       'Bar stool with backrest dark blue metal/height: 110 cm, width: 53cm',
-    img: '/imgs/nahema.png',
+    img: 'imgs/nahema.png',
     price: 289,
     height: '110 cm',
     width: '53 cm',
@@ -29,7 +29,7 @@ const CHAIRS = [
     id: 'ch3',
     description:
       'Cafe chair with backrest blue almaz wood/height: 115 cm, width: 85cm',
-    img: '/imgs/heritage-velvet.png',
+    img: 'imgs/heritage-velvet.png',
     price: 489,
     height: '115 cm',
     width: '85 cm',
@@ -41,7 +41,7 @@ const CHAIRS = [
     id: 'ch4',
     description:
       'Cafe chair with backrest, blue velvet metal/height: 82 cm,width: 75cm',
-    img: '/imgs/court-catania.png',
+    img: 'imgs/court-catania.png',
     price: 269,
     height: '82 cm',
     width: '75 cm',
@@ -53,7 +53,7 @@ const CHAIRS = [
     id: 'ch5',
     description:
       'Cafe chair with backrest golden olive metal/height: 101 cm,width: 53cm',
-    img: '/imgs/camille.png',
+    img: 'imgs/camille.png',
     price: 339,
     height: '101 cm',
     width: '53 cm',
@@ -65,7 +65,7 @@ const CHAIRS = [
     id: 'ch6',
     description:
       'Bar stool with backrest dark brown wood /height: 110 cm, width: 53cm',
-    img: '/imgs/bethany.png',
+    img: 'imgs/bethany.png',
     price: 169,
     height: '110 cm',
     width: '53 cm',
