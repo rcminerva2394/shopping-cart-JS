@@ -25,7 +25,7 @@ const CHAIRS = [
     discount: 0.3,
   },
   {
-    name: 'Heritage Velvet Chair',
+    name: 'Heritage Velvet',
     id: 'ch3',
     description:
       'Cafe chair with backrest blue almaz wood/height: 115 cm, width: 85cm',
@@ -37,7 +37,7 @@ const CHAIRS = [
     material: 'wood',
   },
   {
-    name: 'Court Catania Chair',
+    name: 'Court Catania',
     id: 'ch4',
     description:
       'Cafe chair with backrest, blue velvet metal/height: 82 cm,width: 75cm',
@@ -49,7 +49,7 @@ const CHAIRS = [
     material: 'metal',
   },
   {
-    name: 'Camille Chair',
+    name: 'Camille',
     id: 'ch5',
     description:
       'Cafe chair with backrest golden olive metal/height: 101 cm,width: 53cm',
